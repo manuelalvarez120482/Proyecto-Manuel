@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Consultorio Solo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=DM+Sans:wght@400;500;700&display=swap">
+<style>
+/* Concepto: barra lateral en escritorio, navegación inferior en móvil; una sola columna de trabajo con papel claro y tinta verde. */
+:root{
+  --bg:#f3f5f2; --surface:#ffffff; --ink:#1b2a27; --muted:#62736f; --line:#dde4e0;
+  --accent:#0f6b5e; --accent-ink:#ffffff; --accent-soft:#dff0ec;
+  --ok:#1f7a45; --ok-soft:#dcf1e3; --warn:#9a6700; --warn-soft:#fbefcf; --bad:#b3261e; --bad-soft:#fbe0dd;
+  --f-display:'Fraunces',Georgia,serif; --f-body:'DM Sans',system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1715; --surface:#17221f; --ink:#e6efec; --muted:#93a8a2; --line:#27372f;
+  --accent:#4fc1ae; --accent-ink:#06211c; --accent-soft:#183a34;
+  --ok:#6fd496; --ok-soft:#173826; --warn:#e8bd5b; --warn-soft:#3a2f12; --bad:#ff8b80; --bad-soft:#431c19; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1715; --surface:#17221f; --ink:#e6efec; --muted:#93a8a2; --line:#27372f;
+  --accent:#4fc1ae; --accent-ink:#06211c; --accent-soft:#183a34;
+  --ok:#6fd496; --ok-soft:#173826; --warn:#e8bd5b; --warn-soft:#3a2f12; --bad:#ff8b80; --bad-soft:#431c19; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0}
+h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance}
+h1{font-size:28px} h2{font-size:20px} h3{font-size:16px}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.app{display:grid;grid-template-columns:230px minmax(0,1fr);gap:28px;max-width:1180px;margin:0 auto;min-height:100vh}
+.side{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;padding:24px 0;display:flex;flex-direction:column;gap:6px}
+.brand{font-family:var(--f-display);font-size:20px;font-weight:600;margin-bottom:2px}
+.doc{color:var(--muted);font-size:13px;margin-bottom:18px}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav button{display:flex;align-items:center;gap:10px;background:none;border:0;border-radius:8px;padding:9px 10px;text-align:left;color:var(--muted);font-weight:500}
+.nav button:hover{background:var(--accent-soft);color:var(--ink)}
+.nav button[aria-current="page"]{background:var(--accent-soft);color:var(--accent);font-weight:700}
+.nav svg{width:18px;height:18px;flex:none}
+.tag{margin-top:18px;font-size:12px;color:var(--muted);border:1px dashed var(--line);border-radius:8px;padding:8px 10px}
+main{padding:24px 0 48px;min-width:0}
+.head{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:flex-end;margin-bottom:20px}
+.sub{color:var(--muted);margin-top:2px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;min-width:0}
+.grid{display:grid;gap:14px}
+.g3{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.stat b{display:block;font-family:var(--f-display);font-size:30px;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat span{color:var(--muted);font-size:13px}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 13px;font-weight:500}
+.btn:hover{border-color:var(--accent)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+.btn.sm{padding:5px 9px;font-size:13px}
+.btn.ghost{border-color:transparent;color:var(--accent);background:none}
+.pill{display:inline-block;border-radius:99px;padding:2px 9px;font-size:12px;font-weight:700}
+.pill.ok{background:var(--ok-soft);color:var(--ok)} .pill.warn{background:var(--warn-soft);color:var(--warn)} .pill.bad{background:var(--bad-soft);color:var(--bad)} .pill.mut{background:var(--accent-soft);color:var(--accent)}
+.row{display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.row .t{width:54px;flex:none;font-variant-numeric:tabular-nums;font-weight:700}
+.row .grow{flex:1;min-width:0}
+.row .grow small{color:var(--muted);display:block}
+.row .acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.days{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:12px}
+.days button{flex:1 0 64px;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 6px;text-align:center}
+.days button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.days small{display:block;opacity:.8}
+.slot{display:flex;gap:12px;padding:8px 0;border-top:1px solid var(--line);align-items:center;min-height:46px}
+.slot:first-child{border-top:0}
+.slot .t{width:54px;color:var(--muted);font-variant-numeric:tabular-nums}
+.slot .free{flex:1;text-align:left;background:none;border:1px dashed var(--line);border-radius:8px;color:var(--muted);padding:7px 10px}
+.slot .free:hover{border-color:var(--accent);color:var(--accent)}
+.slot .busy{flex:1;background:var(--accent-soft);border-radius:8px;padding:7px 10px;min-width:0}
+.slot .block{flex:1;background:repeating-linear-gradient(135deg,var(--line) 0 6px,transparent 6px 12px);border-radius:8px;padding:7px 10px;color:var(--muted)}
+label{display:block;font-size:13px;font-weight:700;margin-bottom:4px}
+input[type=text],input[type=time],input[type=number],select,textarea{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:8px 10px}
+textarea{min-height:72px;resize:vertical}
+.f{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:16px;overflow-x:auto}
+.tabs button{background:none;border:0;border-bottom:2px solid transparent;padding:9px 12px;color:var(--muted);font-weight:500;white-space:nowrap}
+.tabs button[aria-selected="true"]{color:var(--accent);border-color:var(--accent);font-weight:700}
+.sec{border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:12px;background:var(--surface)}
+.sec .top{display:flex;justify-content:space-between;gap:8px;margin-bottom:6px}
+.sec .top input{font-weight:700;border-color:transparent;background:none;padding:2px 4px}
+.rx{background:#fff;color:#1b2a27;border:1px solid var(--line);border-radius:10px;padding:20px;font-size:14px}
+.rx h3{font-size:18px} .rx hr{border:0;border-top:1px solid #cfd8d4;margin:12px 0}
+.rx .firma{margin-top:18px;font-family:var(--f-display);font-style:italic;font-size:22px;color:#0f6b5e}
+.rx small{color:#62736f}
+.phone{width:min(320px,100%);margin:0 auto;border:8px solid var(--ink);border-radius:30px;background:var(--bg);padding:18px 14px;display:grid;gap:12px}
+.bub{background:#dcf8c6;color:#1b2a27;border-radius:12px 12px 12px 2px;padding:10px 12px;font-size:14px;box-shadow:0 1px 1px rgba(0,0,0,.12)}
+.bub small{display:block;color:#5d6e68;text-align:right;margin-top:4px}
+.toast{position:fixed;left:50%;bottom:calc(76px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;max-width:90vw;z-index:20;font-weight:500}
+.switch{display:flex;align-items:center;gap:10px;padding:8px 0}
+.switch input{width:18px;height:18px;accent-color:var(--accent)}
+.bottom{display:none}
+@media (max-width:820px){
+  .app{grid-template-columns:minmax(0,1fr);gap:0}
+  .side{display:none}
+  main{padding-bottom:96px}
+  .bottom{display:flex;position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding:6px max(8px,env(safe-area-inset-left,0px)) calc(6px + env(safe-area-inset-bottom,0px));z-index:10}
+  .bottom button{flex:1;background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--muted);padding:4px 0;min-width:0}
+  .bottom button[aria-current="page"]{color:var(--accent);font-weight:700}
+  .bottom svg{width:22px;height:22px}
+  h1{font-size:24px}
+  .row{flex-wrap:wrap} .row .acts{width:100%;justify-content:flex-start}
+}
+@media (prefers-reduced-motion:no-preference){main>*{animation:in .25s ease both}@keyframes in{from{opacity:.4;transform:translateY(4px)}}}
+</style>
+
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="brand">Consultorio Solo</div>
+    <div class="doc">Dra. Mariana Ortega<br>Medicina general</div>
+    <nav class="nav" id="nav-side" aria-label="Principal"></nav>
+    <div class="tag">Boceto con datos de ejemplo. Nada se guarda ni se envía de verdad todavía.</div>
+  </aside>
+  <main id="view"></main>
+</div>
+<nav class="bottom" id="nav-bottom" aria-label="Principal"></nav>
+<div id="toast-host"></div>
+
+<script>
+const ICON = {
+  hoy:'<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+  agenda:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  pacientes:'<circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6 7-6s7 2 7 6M17 4a4 4 0 0 1 0 8M22 21c0-3-2-5-4-5.6"/>',
+  receta:'<path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7M9 8h3"/>',
+  ajustes:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/>',
+  portal:'<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>'
+};
+const NAV = [['hoy','Hoy'],['agenda','Agenda'],['pacientes','Pacientes'],['receta','Recetas'],['ajustes','Ajustes'],['portal','Portal']];
+const svg = k => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[k]}</svg>`;
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+const S = {
+  view:'hoy', day:0, patient:null, tab:'hc', draft:null,
+  tipos:[{n:'Primera vez',m:45},{n:'Seguimiento',m:30},{n:'Urgencia',m:20}],
+  pacientes:[
+    {id:1,n:'Lucía Hernández Ruiz',edad:34,tel:'55 1234 5678',alergias:'Penicilina',notas:'Control de hipertensión.'},
+    {id:2,n:'Carlos Mendoza Soto',edad:52,tel:'55 8765 4321',alergias:'Ninguna conocida',notas:'Diabetes tipo 2, seguimiento trimestral.'},
+    {id:3,n:'Ana Paola Ríos',edad:8,tel:'33 2222 1111',alergias:'Ninguna conocida',notas:'Revisión pediátrica general.'},
+    {id:4,n:'Roberto Salinas',edad:67,tel:'81 4444 9090',alergias:'Sulfas',notas:'Dolor lumbar crónico.'}
+  ],
+  citas:[
+    {d:0,h:'09:00',p:1,t:'Seguimiento',st:'ok'},
+    {d:0,h:'10:00',p:2,t:'Seguimiento',st:'ok'},
+    {d:0,h:'11:30',p:3,t:'Primera vez',st:'warn'},
+    {d:0,h:'16:00',p:4,t:'Seguimiento',st:'warn'},
+    {d:1,h:'09:30',p:2,t:'Urgencia',st:'ok'},
+    {d:2,h:'12:00',p:1,t:'Primera vez',st:'warn'}
+  ],
+  horario:[['Lun',1,'09:00','18:00'],['Mar',1,'09:00','18:00'],['Mié',1,'09:00','14:00'],['Jue',1,'09:00','18:00'],['Vie',1,'09:00','16:00'],['Sáb',0,'09:00','13:00'],['Dom',0,'09:00','13:00']],
+  rec:{h24:true,h2:true},
+  secciones:[
+    {t:'Motivo de consulta',v:'Control de presión arterial.'},
+    {t:'Antecedentes',v:'Hipertensión desde 2021. Sin cirugías previas.'},
+    {t:'Exploración física',v:'TA 128/82, FC 74, peso 68 kg.'},
+    {t:'Diagnóstico',v:'Hipertensión arterial controlada.'},
+    {t:'Plan',v:'Continuar tratamiento. Control en 3 meses.'}
+  ],
+  meds:[{m:'Losartán 50 mg',i:'1 tableta cada 24 horas por 30 días'}],
+  archivos:[['Biometría hemática.pdf','12 mar 2026'],['Electrocardiograma.jpg','02 feb 2026']]
+};
+const DIAS = ['Lun 12','Mar 13','Mié 14','Jue 15','Vie 16','Sáb 17'];
+const P = id => S.pacientes.find(p => p.id === id);
+const minutos = t => { const [h,m] = t.split(':').map(Number); return h*60+m; };
+
+function toast(msg){
+  const host = document.getElementById('toast-host');
+  host.innerHTML = `<div class="toast" role="status">${esc(msg)}</div>`;
+  clearTimeout(toast.t); toast.t = setTimeout(() => host.innerHTML = '', 2600);
+}
+const sim = what => toast(`Simulado: ${what}. Se conectará a WhatsApp después.`);
+
+function go(v, extra){ S.view = v; if(extra) Object.assign(S, extra); render(); window.scrollTo(0,0); }
+
+function renderNav(){
+  const html = NAV.map(([k,l]) => `<button data-go="${k}" ${S.view===k||(k==='pacientes'&&S.view==='paciente')?'aria-current="page"':''}>${svg(k)}<span>${l}</span></button>`).join('');
+  document.getElementById('nav-side').innerHTML = html;
+  document.getElementById('nav-bottom').innerHTML = html;
+}
+
+function vHoy(){
+  const hoy = S.citas.filter(c => c.d === 0).sort((a,b) => minutos(a.h)-minutos(b.h));
+  const conf = hoy.filter(c => c.st==='ok').length;
+  return `
+  <div class="head"><div><h1>Buenos días, Dra. Ortega</h1><div class="sub">Lunes 12 de octubre · ${hoy.length} citas hoy</div></div>
+  <button class="btn pri" data-go="agenda">Nueva cita</button></div>
+  <div class="grid g3" style="margin-bottom:16px">
+    <div class="card stat"><b>${hoy.length}</b><span>Citas hoy</span></div>
+    <div class="card stat"><b>${conf}</b><span>Confirmadas</span></div>
+    <div class="card stat"><b>${hoy.length-conf}</b><span>Sin confirmar</span></div>
+  </div>
+  <div class="card"><h2 style="margin-bottom:6px">Agenda de hoy</h2>
+  ${hoy.map(c => `<div class="row"><div class="t">${c.h}</div>
+    <div class="grow"><b>${esc(P(c.p).n)}</b><small>${esc(c.t)}</small></div>
+    <span class="pill ${c.st}">${c.st==='ok'?'Confirmada':'Sin confirmar'}</span>
+    <div class="acts">${c.st==='warn'?`<button class="btn sm" data-sim="recordatorio de cita a ${esc(P(c.p).n)}">Recordar por WhatsApp</button>`:''}
+    <button class="btn sm" data-pac="${c.p}">Abrir expediente</button></div></div>`).join('')}
+  </div>`;
+}
+
+function vAgenda(){
+  const horas = []; for(let m=540; m<=1020; m+=30) horas.push(String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0'));
+  const dia = S.citas.filter(c => c.d === S.day);
+  const form = S.draft ? `
+  <div class="card" style="margin-top:14px"><h2 style="margin-bottom:10px">Nueva cita · ${DIAS[S.day]} · ${S.draft}</h2>
+    <div class="f">
+      <div><label for="n-pac">Paciente</label><select id="n-pac">${S.pacientes.map(p => `<option value="${p.id}">${esc(p.n)}</option>`).join('')}</select></div>
+      <div><label for="n-tipo">Tipo de consulta</label><select id="n-tipo">${S.tipos.map(t => `<option>${esc(t.n)}</option>`).join('')}</select></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px"><button class="btn pri" id="n-ok">Guardar cita</button><button class="btn" id="n-no">Cancelar</button></div>
+  </div>` : '';
+  return `
+  <div class="head"><div><h1>Agenda</h1><div class="sub">Toca un horario libre para agendar. Las franjas rayadas están bloqueadas.</div></div></div>
+  <div class="days">${DIAS.map((d,i) => { const [a,b]=d.split(' '); return `<button data-day="${i}" aria-pressed="${S.day===i}">${a}<small>${b}</small></button>`; }).join('')}</div>
+  <div class="card">${horas.map(h => {
+    if(h>='14:00' && h<'15:00') return `<div class="slot"><div class="t">${h}</div><div class="block">Comida (bloqueado)</div></div>`;
+    const c = dia.find(x => x.h === h);
+    if(c) return `<div class="slot"><div class="t">${h}</div><div class="busy"><b>${esc(P(c.p).n)}</b> · ${esc(c.t)} <span class="pill ${c.st}">${c.st==='ok'?'Confirmada':'Sin confirmar'}</span></div></div>`;
+    return `<div class="slot"><div class="t">${h}</div><button class="free" data-free="${h}">Libre</button></div>`;
+  }).join('')}</div>${form}`;
+}
+
+function vPacientes(){
+  return `
+  <div class="head"><div><h1>Pacientes</h1><div class="sub">${S.pacientes.length} pacientes de ejemplo</div></div></div>
+  <div style="margin-bottom:12px"><label for="q">Buscar</label><input type="text" id="q" placeholder="Nombre o teléfono"></div>
+  <div class="card" id="plist">${listaPac('')}</div>`;
+}
+function listaPac(q){
+  const r = S.pacientes.filter(p => (p.n+p.tel).toLowerCase().includes(q.toLowerCase()));
+  return r.length ? r.map(p => `<div class="row"><div class="grow"><b>${esc(p.n)}</b><small>${p.edad} años · ${esc(p.tel)}</small></div><button class="btn sm" data-pac="${p.id}">Abrir</button></div>`).join('') : '<div class="sub">Sin resultados.</div>';
+}
+
+function vPaciente(){
+  const p = P(S.patient);
+  const mias = S.citas.filter(c => c.p === p.id);
+  const tabs = [['hc','Historia clínica'],['res','Resumen'],['con','Consultas'],['arc','Archivos']];
+  let body = '';
+  if(S.tab==='res') body = `<div class="card"><div class="f">
+      <div><label>Teléfono</label>${esc(p.tel)}</div><div><label>Alergias</label>${esc(p.alergias)}</div><div><label>Edad</label>${p.edad} años</div></div>
+      <p style="margin-bottom:0">${esc(p.notas)}</p></div>`;
+  if(S.tab==='con') body = `<div class="card">${mias.length ? mias.map(c => `<div class="row"><div class="t">${DIAS[c.d].split(' ')[1]}</div><div class="grow"><b>${esc(c.t)}</b><small>${DIAS[c.d]} · ${c.h}</small></div></div>`).join('') : '<div class="sub">Aún no hay consultas.</div>'}</div>`;
+  if(S.tab==='arc') body = `<div class="card">${S.archivos.map(a => `<div class="row"><div class="grow"><b>${esc(a[0])}</b><small>${a[1]}</small></div><button class="btn sm" data-sim="abrir archivo">Ver</button></div>`).join('')}
+      <div style="margin-top:10px"><button class="btn" data-sim="adjuntar un archivo">Adjuntar estudio</button></div></div>`;
+  if(S.tab==='hc') body = `
+    <p class="sub" style="margin-top:0">Plantilla general. Cambia los títulos, agrega o quita secciones y guárdala como tuya.</p>
+    ${S.secciones.map((s,i) => `<div class="sec"><div class="top"><input type="text" value="${esc(s.t)}" data-st="${i}" aria-label="Título de sección"><button class="btn sm ghost" data-del="${i}">Quitar</button></div>
+      <textarea data-sv="${i}" aria-label="${esc(s.t)}">${esc(s.v)}</textarea></div>`).join('')}
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="add-sec">Agregar sección</button><button class="btn" id="save-tpl">Guardar como mi plantilla</button><button class="btn pri" id="save-hc">Guardar consulta</button></div>`;
+  return `
+  <div class="head"><div><button class="btn sm ghost" data-go="pacientes" style="padding-left:0">← Pacientes</button><h1>${esc(p.n)}</h1><div class="sub">${p.edad} años · ${esc(p.tel)}</div></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-sim="mensaje de WhatsApp a ${esc(p.n)}">WhatsApp</button><button class="btn pri" data-go="receta">Nueva receta</button></div></div>
+  <div class="tabs" role="tablist">${tabs.map(([k,l]) => `<button role="tab" data-tab="${k}" aria-selected="${S.tab===k}">${l}</button>`).join('')}</div>${body}`;
+}
+
+function vReceta(){
+  const p = P(S.patient || 1);
+  return `
+  <div class="head"><div><h1>Receta</h1><div class="sub">Arma la receta y mira cómo la recibe el paciente.</div></div></div>
+  <div class="grid g2">
+    <div class="card"><div style="margin-bottom:12px"><label for="r-pac">Paciente</label><select id="r-pac">${S.pacientes.map(x => `<option value="${x.id}" ${x.id===p.id?'selected':''}>${esc(x.n)}</option>`).join('')}</select></div>
+      ${S.meds.map((m,i) => `<div class="sec"><div class="top"><b>Medicamento ${i+1}</b>${S.meds.length>1?`<button class="btn sm ghost" data-mdel="${i}">Quitar</button>`:''}</div>
+        <label for="m${i}">Nombre y dosis</label><input type="text" id="m${i}" value="${esc(m.m)}" data-mm="${i}">
+        <div style="height:8px"></div><label for="i${i}">Indicaciones</label><textarea id="i${i}" data-mi="${i}">${esc(m.i)}</textarea></div>`).join('')}
+      <button class="btn" id="add-med">Agregar medicamento</button></div>
+    <div><div class="rx"><h3>Dra. Mariana Ortega</h3><small>Medicina general · Cédula 0000000 (ejemplo)<br>Consultorio Centro, Ciudad de México</small><hr>
+      <div><b>Paciente:</b> ${esc(p.n)}<br><small>Alergias: ${esc(p.alergias)}</small></div><hr>
+      ${S.meds.map((m,i) => `<p style="margin:0 0 10px"><b>${i+1}. ${esc(m.m)}</b><br>${esc(m.i)}</p>`).join('')}
+      <div class="firma">Mariana Ortega</div><small>Firma electrónica · 12 oct 2026</small></div>
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><button class="btn" data-sim="descargar PDF">Descargar PDF</button><button class="btn pri" data-sim="envío de la receta por WhatsApp a ${esc(p.n)}">Enviar por WhatsApp</button></div></div>
+  </div>`;
+}
+
+function vAjustes(){
+  return `
+  <div class="head"><div><h1>Ajustes</h1><div class="sub">Tu consultorio, a tu manera.</div></div></div>
+  <div class="grid g2">
+    <div class="card"><h2 style="margin-bottom:8px">Horario de atención</h2>
+      ${S.horario.map((d,i) => `<div class="row"><div class="t" style="width:44px">${d[0]}</div><label class="switch" style="margin:0"><input type="checkbox" data-hon="${i}" ${d[1]?'checked':''} aria-label="Atiende ${d[0]}"></label>
+        <div class="grow" style="display:flex;gap:6px"><input type="time" value="${d[2]}" ${d[1]?'':'disabled'} aria-label="Inicio ${d[0]}"><input type="time" value="${d[3]}" ${d[1]?'':'disabled'} aria-label="Fin ${d[0]}"></div></div>`).join('')}</div>
+    <div class="grid" style="align-content:start">
+      <div class="card"><h2 style="margin-bottom:8px">Tipos de consulta</h2>
+        ${S.tipos.map(t => `<div class="row"><div class="grow"><b>${esc(t.n)}</b></div><span class="pill mut">${t.m} min</span></div>`).join('')}
+        <div class="f" style="margin-top:12px"><div><label for="tn">Nombre</label><input type="text" id="tn" placeholder="Ej. Revisión de estudios"></div><div><label for="tm">Minutos</label><input type="number" id="tm" value="30" min="5" step="5"></div></div>
+        <div style="margin-top:10px"><button class="btn" id="add-tipo">Agregar tipo</button></div></div>
+      <div class="card"><h2 style="margin-bottom:4px">Recordatorios</h2>
+        <label class="switch"><input type="checkbox" data-rec="h24" ${S.rec.h24?'checked':''}> 24 horas antes de la cita</label>
+        <label class="switch"><input type="checkbox" data-rec="h2" ${S.rec.h2?'checked':''}> 2 horas antes de la cita</label>
+        <div class="sub" style="font-size:13px">Se enviarán por WhatsApp cuando conectemos la cuenta.</div></div>
+    </div>
+  </div>`;
+}
+
+function vPortal(){
+  const c = S.citas.find(x => x.p === 1 && x.d === 2);
+  return `
+  <div class="head"><div><h1>Portal del paciente</h1><div class="sub">Así lo ve Lucía en su celular.</div></div></div>
+  <div class="phone">
+    <div class="bub">Hola Lucía, te recordamos tu cita con la Dra. Ortega el <b>${DIAS[c.d]} a las ${c.h}</b>. ¿Confirmas?<small>10:02</small></div>
+    <div class="card"><h3 style="margin-bottom:6px">Próxima cita</h3><div><b>${DIAS[c.d]} · ${c.h}</b></div><div class="sub">${esc(c.t)} · Consultorio Centro</div>
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn pri sm" data-sim="confirmación de la cita">Confirmar</button><button class="btn sm" data-sim="solicitud de cambio de cita">Cambiar</button></div></div>
+    <div class="card"><h3 style="margin-bottom:6px">Mis recetas</h3><div class="sub">Receta del 12 oct 2026</div><button class="btn sm" style="margin-top:8px" data-sim="descargar receta">Ver receta</button></div>
+  </div>`;
+}
+
+const VIEWS = {hoy:vHoy, agenda:vAgenda, pacientes:vPacientes, paciente:vPaciente, receta:vReceta, ajustes:vAjustes, portal:vPortal};
+function render(){ renderNav(); document.getElementById('view').innerHTML = VIEWS[S.view](); }
+
+document.addEventListener('click', e => {
+  const t = e.target.closest('button'); if(!t) return;
+  const d = t.dataset;
+  if(d.go) return go(d.go);
+  if(d.pac) return go('paciente', {patient:+d.pac, tab:'hc'});
+  if(d.tab){ S.tab = d.tab; return render(); }
+  if(d.day){ S.day = +d.day; S.draft = null; return render(); }
+  if(d.free){ S.draft = d.free; return render(); }
+  if(d.sim !== undefined) return sim(d.sim);
+  if(d.del !== undefined){ S.secciones.splice(+d.del,1); return render(); }
+  if(d.mdel !== undefined){ S.meds.splice(+d.mdel,1); return render(); }
+  if(t.id==='n-no'){ S.draft = null; return render(); }
+  if(t.id==='n-ok'){
+    S.citas.push({d:S.day,h:S.draft,p:+document.getElementById('n-pac').value,t:document.getElementById('n-tipo').value,st:'warn'});
+    S.draft = null; toast('Cita guardada'); return render();
+  }
+  if(t.id==='add-sec'){ S.secciones.push({t:'Nueva sección',v:''}); return render(); }
+  if(t.id==='save-tpl') return toast('Plantilla guardada (ejemplo)');
+  if(t.id==='save-hc') return toast('Consulta guardada (ejemplo)');
+  if(t.id==='add-med'){ S.meds.push({m:'',i:''}); return render(); }
+  if(t.id==='add-tipo'){
+    const n = document.getElementById('tn').value.trim(); if(!n) return toast('Escribe un nombre');
+    S.tipos.push({n, m:+document.getElementById('tm').value||30}); return render();
+  }
+});
+document.addEventListener('input', e => {
+  const d = e.target.dataset;
+  if(e.target.id==='q') return document.getElementById('plist').innerHTML = listaPac(e.target.value);
+  if(d.st !== undefined) S.secciones[+d.st].t = e.target.value;
+  if(d.sv !== undefined) S.secciones[+d.sv].v = e.target.value;
+  if(d.mm !== undefined) S.meds[+d.mm].m = e.target.value;
+  if(d.mi !== undefined) S.meds[+d.mi].i = e.target.value;
+});
+document.addEventListener('change', e => {
+  const d = e.target.dataset;
+  if(e.target.id==='r-pac'){ S.patient = +e.target.value; return render(); }
+  if(d.hon !== undefined){ S.horario[+d.hon][1] = e.target.checked ? 1 : 0; return render(); }
+  if(d.rec) S.rec[d.rec] = e.target.checked;
+});
+render();
+</script>
+</body>
+</html>
