@@ -53,6 +53,9 @@ main{padding:24px 0 48px;min-width:0}
 .btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
 .btn.sm{padding:5px 9px;font-size:13px}
 .btn.ghost{border-color:transparent;color:var(--accent);background:none}
+.btn.exp{background:#87ceeb;border-color:#87ceeb;color:#0b2a3a;font-family:Arial,Helvetica,sans-serif;font-weight:700}
+.btn.wa{background:#168a45;border-color:#168a45;color:#fff;font-family:Arial,Helvetica,sans-serif;font-weight:700}
+.btn.exp:hover,.btn.wa:hover{filter:brightness(.93)}
 .pill{display:inline-block;border-radius:99px;padding:2px 9px;font-size:12px;font-weight:700}
 .pill.ok{background:var(--ok-soft);color:var(--ok)} .pill.warn{background:var(--warn-soft);color:var(--warn)} .pill.bad{background:var(--bad-soft);color:var(--bad)} .pill.mut{background:var(--accent-soft);color:var(--accent)}
 .row{display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
@@ -197,8 +200,8 @@ function vHoy(){
   ${hoy.map(c => `<div class="row"><div class="t">${c.h}</div>
     <div class="grow"><b>${esc(P(c.p).n)}</b><small>${esc(c.t)}</small></div>
     <span class="pill ${c.st}">${c.st==='ok'?'Confirmada':'Sin confirmar'}</span>
-    <div class="acts">${c.st==='warn'?`<button class="btn sm" data-sim="recordatorio de cita a ${esc(P(c.p).n)}">Recordar por WhatsApp</button>`:''}
-    <button class="btn sm" data-pac="${c.p}">Abrir expediente</button></div></div>`).join('')}
+    <div class="acts">${c.st==='warn'?`<button class="btn sm wa" data-sim="recordatorio de cita a ${esc(P(c.p).n)}">Recordar por WhatsApp</button>`:''}
+    <button class="btn sm exp" data-pac="${c.p}">Abrir expediente</button></div></div>`).join('')}
   </div>`;
 }
 
@@ -232,7 +235,7 @@ function vPacientes(){
 }
 function listaPac(q){
   const r = S.pacientes.filter(p => (p.n+p.tel).toLowerCase().includes(q.toLowerCase()));
-  return r.length ? r.map(p => `<div class="row"><div class="grow"><b>${esc(p.n)}</b><small>${p.edad} años · ${esc(p.tel)}</small></div><button class="btn sm" data-pac="${p.id}">Abrir</button></div>`).join('') : '<div class="sub">Sin resultados.</div>';
+  return r.length ? r.map(p => `<div class="row"><div class="grow"><b>${esc(p.n)}</b><small>${p.edad} años · ${esc(p.tel)}</small></div><button class="btn sm exp" data-pac="${p.id}">Abrir expediente</button></div>`).join('') : '<div class="sub">Sin resultados.</div>';
 }
 
 function vPaciente(){
@@ -253,7 +256,7 @@ function vPaciente(){
     <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="add-sec">Agregar sección</button><button class="btn" id="save-tpl">Guardar como mi plantilla</button><button class="btn pri" id="save-hc">Guardar consulta</button></div>`;
   return `
   <div class="head"><div><button class="btn sm ghost" data-go="pacientes" style="padding-left:0">← Pacientes</button><h1>${esc(p.n)}</h1><div class="sub">${p.edad} años · ${esc(p.tel)}</div></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-sim="mensaje de WhatsApp a ${esc(p.n)}">WhatsApp</button><button class="btn pri" data-go="receta">Nueva receta</button></div></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn wa" data-sim="mensaje de WhatsApp a ${esc(p.n)}">Enviar mensaje por WhatsApp</button><button class="btn pri" data-go="receta">Nueva receta</button></div></div>
   <div class="tabs" role="tablist">${tabs.map(([k,l]) => `<button role="tab" data-tab="${k}" aria-selected="${S.tab===k}">${l}</button>`).join('')}</div>${body}`;
 }
 
@@ -271,7 +274,7 @@ function vReceta(){
       <div><b>Paciente:</b> ${esc(p.n)}<br><small>Alergias: ${esc(p.alergias)}</small></div><hr>
       ${S.meds.map((m,i) => `<p style="margin:0 0 10px"><b>${i+1}. ${esc(m.m)}</b><br>${esc(m.i)}</p>`).join('')}
       <div class="firma">Mariana Ortega</div><small>Firma electrónica · 12 oct 2026</small></div>
-      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><button class="btn" data-sim="descargar PDF">Descargar PDF</button><button class="btn pri" data-sim="envío de la receta por WhatsApp a ${esc(p.n)}">Enviar por WhatsApp</button></div></div>
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><button class="btn" data-sim="descargar PDF">Descargar PDF</button><button class="btn wa" data-sim="envío de la receta por WhatsApp a ${esc(p.n)}">Enviar por WhatsApp</button></div></div>
   </div>`;
 }
 
